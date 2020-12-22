@@ -34,6 +34,8 @@ ZhuBot.on('message', message => {
 
 });
 
+
+//Stored key in a file named "key.txt"
 fs.readFile('key.txt', 'utf8',(err, data) => {
     const key = data;
     ZhuBot.login(key);
