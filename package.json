@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ImJonathanZ/ZhuBot/issues"
   },
-  "homepage": "https://github.com/ImJonathanZ/ZhuBot#readme"
+  "homepage": "https://github.com/ImJonathanZ/ZhuBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
 }
