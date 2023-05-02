@@ -1,0 +1,28 @@
+{
+  "name": "ZhuBot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "@discordjs/rest": "^1.7.0",
+    "chalk": "^4.1.2",
+    "discord-api-types": "^0.37.40",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImJonathanZ/ZhuBot.git"
+  },
+  "keywords": [],
+  "author": "Jonathan Zhu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ImJonathanZ/ZhuBot/issues"
+  },
+  "homepage": "https://github.com/ImJonathanZ/ZhuBot#readme"
+}
