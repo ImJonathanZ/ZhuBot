@@ -1,9 +1,15 @@
 require("dotenv").config();
 const { token } = process.env;
-const { Client, Collection, Events ,GatewayIntentBits } = require("discord.js");
+const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+    ],
+});
 
 client.commands = new Collection();
 client.commandArray = [];
@@ -18,12 +24,7 @@ for (const folder of functionFolders) {
     }
 }
 
-client.on(Events.InteractionCreate, interaction => {
-	console.log(`${interaction} Has been called`);
-});
-
-
 
 client.handleEvents();
 client.handleCommands();
-client.login(token)
+client.login(token);
