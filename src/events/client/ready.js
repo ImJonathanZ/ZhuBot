@@ -1,3 +1,5 @@
+const { request } = require('undici');
+
 module.exports = {
     name: "ready",
     once: true,
