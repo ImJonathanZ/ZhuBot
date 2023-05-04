@@ -1,5 +1,7 @@
-//This command is used to delete a certain amount of messages from a channel
-//The user can also specify a user to delete messages from (optional)
+/**
+ * This command is used to delete a certain amount of messages from a channel
+ * A user can be specified to delete messages from. Note this will only delete messages from user within Amount number of messages
+ */
 
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
@@ -23,7 +25,7 @@ module.exports = {
     async execute(interaction, client) {
         const amount = interaction.options.getInteger("amount");
         const user = interaction.options.getUser("user");
-
+        let filter = null;
         if (amount > 100) {
             return interaction.reply({
                 content: "You can only delete 100 messages at a time",
@@ -35,7 +37,8 @@ module.exports = {
             const messages = await interaction.channel.messages.fetch({
                 limit: amount,
             });
-            const filter = messages.filter((m) => m.author.id === user.id);
+            filter = messages.filter((m) => m.author.id === user.id);
+            console.log(filter.size);
             await interaction.channel.bulkDelete(filter, true);
         } else {
             await interaction.channel.bulkDelete(amount, true);
@@ -44,7 +47,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle("Purged!")
             .setDescription(
-                `${interaction.user} successfully deleted ${amount} messages from ${
+                `${interaction.user} successfully deleted ${filter?.size ?? amount} messages from ${
                     user?.tag ?? "everyone"
                 }`
             )
