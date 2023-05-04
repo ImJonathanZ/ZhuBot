@@ -3,12 +3,13 @@
  * A user can be specified to delete messages from. Note this will only delete messages from user within Amount number of messages
  */
 
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("purge")
         .setDescription("Deletes a certain amount of messages")
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addIntegerOption((option) =>
             option
                 .setName("amount")
@@ -38,7 +39,6 @@ module.exports = {
                 limit: amount,
             });
             filter = messages.filter((m) => m.author.id === user.id);
-            console.log(filter.size);
             await interaction.channel.bulkDelete(filter, true);
         } else {
             await interaction.channel.bulkDelete(amount, true);
