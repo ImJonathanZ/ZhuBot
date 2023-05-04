@@ -5,6 +5,8 @@ This bot is created as a fun project to create moderation, and incorporate cool 
 
 ## Commands:
 
+- `/ping`
+    - Returns the message latency and API latency of the bot
 - `/purge <amount> <user>`
     - Deletes `<amount>` number of messages
     - `<amount>` - the number of messages to delete
