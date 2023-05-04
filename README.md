@@ -3,6 +3,9 @@
 ## A discord bot created for servers with friends
 This bot is created as a fun project to create moderation, and incorporate cool and fun features into a discord. Punny name after my last name and the Pokémon Zubat.
 
+## Features:
+`Anti-Gambling` - When a user mentions anything regards to gambling they will be alerted that excessive gambling is not good.\
+`Spotify Reaction` - When a user sends a Spotify link, the bot will automatically react with two emojis to let others react if they enjoy the song or not. 
 ## Commands:
 
 - `/ping`
