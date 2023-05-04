@@ -1,3 +1,4 @@
+const wait = require('node:timers/promises').setTimeout;
 const checkGamba = (message) => {
     if (message.author.bot) return;
     if (
@@ -6,14 +7,19 @@ const checkGamba = (message) => {
         message.content.toLowerCase().includes(`slot`) ||
         message.content.toLowerCase().includes(`casino`)
     ) {
-        message.reply(`Gambling is bad. Go get help.`);
+        message.reply({
+            content: `Gambling is bad. Go get help. https://www.gamblersanonymous.org/ga/`,
+            
+        });
+        
     }
 };
 
 
 module.exports = {
     name: "messageCreate",
-    execute(message) {
-        checkGamba(message);
+    async execute(interaction, client) {
+        await checkGamba(interaction);
+        
     },
 };
