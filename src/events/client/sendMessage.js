@@ -10,7 +10,7 @@ const checkGamba = (message) => {
         message.content.toLowerCase().includes(`casino`)
     ) {
         message.reply({
-            content: `Excessive gambling is bad. Go get help.\nhttps://www.gamblersanonymous.org/ga/`,
+            content: `Excessive gambling is bad. Go get help.\nhttps://shorturl.at/dsGT7`,
         });
     }
 };
