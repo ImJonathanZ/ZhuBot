@@ -7,7 +7,8 @@ This bot is created as a fun project to create moderation, and incorporate cool 
 `Anti-Gambling` - When a user mentions anything regards to gambling they will be alerted that excessive gambling is not good.\
 `Spotify Reaction` - When a user sends a Spotify link, the bot will automatically react with two emojis to let others react if they enjoy the song or not. 
 ## **Commands:**
-
+- `/lfg <user>`
+    - Pings/mentions `<user>` with a dumb funny message from predeterminded set of messages.
 - `/ping`
     - Returns the message latency and API latency of the bot
 - `/purge <amount> <user>`
