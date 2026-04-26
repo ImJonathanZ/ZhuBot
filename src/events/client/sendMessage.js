@@ -5,6 +5,8 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const axios = require("axios");
 
+const USE_GOOGLE_API = false; // Set to true to enable Google Places lookup
+
 // Replies with a gambling help embed + resource buttons if the message contains any gambling keywords
 const checkGamba = (message) => {
     // Ignore messages sent by bots to avoid infinite loops
@@ -114,17 +116,6 @@ const checkInstagram = async (message) => {
     console.log("[Instagram] Pin match:", pinMatch ? `"${pinMatch[1].trim()}"` : "none");
     console.log("[Instagram] Search query:", `"${searchQuery}"`);
 
-    console.log("[Google] API key present:", !!process.env.GOOGLE_PLACES_API_KEY);
-    // Search Google Places Text Search API for the restaurant
-    const googleRes = await axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json", {
-        params: { query: searchQuery, key: process.env.GOOGLE_PLACES_API_KEY },
-    });
-    console.log("[Google] Status:", googleRes.data.status);
-    console.log("[Google] Error message:", googleRes.data.error_message ?? "none");
-    console.log("[Google] Results count:", googleRes.data.results.length);
-    if (googleRes.data.results[0]) console.log("[Google] Top result:", googleRes.data.results[0].name, "|", googleRes.data.results[0].formatted_address);
-    const place = googleRes.data.results[0];
-
     // Base embed shared by both branches
     const embed = new EmbedBuilder()
         .setColor(0xe1306c)
@@ -137,32 +128,45 @@ const checkInstagram = async (message) => {
 
     if (thumbnail) embed.setThumbnail(thumbnail);
 
-    if (place) {
-        // Restaurant found — build full embed with details
-        const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
-        embed
-            .setTitle(place.name)
-            .setURL(mapsUrl)
-            .setDescription(cleanCaption)
-            .addFields(
-                { name: "📍 Address", value: place.formatted_address },
-                { name: "⭐ Rating", value: place.rating ? `${place.rating} / 5  (${place.user_ratings_total ?? "?"} reviews)` : "N/A", inline: true },
-                { name: "💰 Price", value: priceSymbols(place.price_level), inline: true }
-            )
-            .setFooter({
-                text: "ZhuBot • Powered by Google Places",
-                iconURL: "https://www.gstatic.com/images/branding/product/1x/maps_round_32dp.png",
-            });
+    if (USE_GOOGLE_API) {
+        console.log("[Google] API key present:", !!process.env.GOOGLE_PLACES_API_KEY);
+        // Search Google Places Text Search API for the restaurant
+        const googleRes = await axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json", {
+            params: { query: searchQuery, key: process.env.GOOGLE_PLACES_API_KEY },
+        });
+        console.log("[Google] Status:", googleRes.data.status);
+        console.log("[Google] Error message:", googleRes.data.error_message ?? "none");
+        console.log("[Google] Results count:", googleRes.data.results.length);
+        if (googleRes.data.results[0]) console.log("[Google] Top result:", googleRes.data.results[0].name, "|", googleRes.data.results[0].formatted_address);
+        const place = googleRes.data.results[0];
 
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setLabel("Google Maps").setEmoji("🗺️").setURL(mapsUrl).setStyle(ButtonStyle.Link),
-            new ButtonBuilder().setLabel("Instagram Post").setEmoji("📸").setURL(url).setStyle(ButtonStyle.Link)
-        );
+        if (place) {
+            // Restaurant found — build full embed with details
+            const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
+            embed
+                .setTitle(place.name)
+                .setURL(mapsUrl)
+                .setDescription(cleanCaption)
+                .addFields(
+                    { name: "📍 Address", value: place.formatted_address },
+                    { name: "⭐ Rating", value: place.rating ? `${place.rating} / 5  (${place.user_ratings_total ?? "?"} reviews)` : "N/A", inline: true },
+                    { name: "💰 Price", value: priceSymbols(place.price_level), inline: true }
+                )
+                .setFooter({
+                    text: "ZhuBot • Powered by Google Places",
+                    iconURL: "https://www.gstatic.com/images/branding/product/1x/maps_round_32dp.png",
+                });
 
-        return message.channel.send({ embeds: [embed], components: [row] });
+            const row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder().setLabel("Google Maps").setEmoji("🗺️").setURL(mapsUrl).setStyle(ButtonStyle.Link),
+                new ButtonBuilder().setLabel("Instagram Post").setEmoji("📸").setURL(url).setStyle(ButtonStyle.Link)
+            );
+
+            return message.channel.send({ embeds: [embed], components: [row] });
+        }
     }
 
-    // Fallback: no Google result — just show the caption and a link to the post
+    // Fallback: Google API off, or no result found — just show the caption and a link to the post
     embed
         .setTitle("Food Spotted 👀")
         .setURL(url)
