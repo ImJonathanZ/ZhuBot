@@ -1,6 +1,6 @@
 /**
- * This command is used to delete a certain amount of messages from a channel
- * A user can be specified to delete messages from. Note this will only delete messages from user within Amount number of messages
+ * This command is used to Call a user online
+ * A user must be specified to call online
  */
 
 const { SlashCommandBuilder } = require("discord.js");
