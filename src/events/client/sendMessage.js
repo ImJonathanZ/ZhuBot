@@ -4,6 +4,7 @@
  */
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const axios = require("axios");
+const { insertFoodPlace } = require("../../database/db");
 
 const USE_GOOGLE_API = false; // Set to true to enable Google Places lookup
 
@@ -157,6 +158,26 @@ const checkInstagram = async (message) => {
                     iconURL: "https://www.gstatic.com/images/branding/product/1x/maps_round_32dp.png",
                 });
 
+            try {
+                insertFoodPlace({
+                    instagram_url: url,
+                    instagram_handle: handle,
+                    restaurant_name: place.name,
+                    caption: cleanCaption,
+                    thumbnail_url: thumbnail ?? null,
+                    google_place_id: place.place_id,
+                    address: place.formatted_address,
+                    rating: place.rating ?? null,
+                    review_count: place.user_ratings_total ?? null,
+                    price_level: priceSymbols(place.price_level),
+                    maps_url: mapsUrl,
+                    discord_user_id: message.author.id,
+                    discord_channel_id: message.channel.id,
+                });
+            } catch (e) {
+                console.error("[DB] Failed to insert food place:", e.message);
+            }
+
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setLabel("Google Maps").setEmoji("🗺️").setURL(mapsUrl).setStyle(ButtonStyle.Link),
                 new ButtonBuilder().setLabel("Instagram Post").setEmoji("📸").setURL(url).setStyle(ButtonStyle.Link)
@@ -172,6 +193,26 @@ const checkInstagram = async (message) => {
         .setURL(url)
         .setDescription(cleanCaption)
         .setFooter({ text: "ZhuBot • Could not find location on Google Maps" });
+
+    try {
+        insertFoodPlace({
+            instagram_url: url,
+            instagram_handle: handle,
+            restaurant_name: searchQuery,
+            caption: cleanCaption,
+            thumbnail_url: thumbnail ?? null,
+            google_place_id: null,
+            address: null,
+            rating: null,
+            review_count: null,
+            price_level: null,
+            maps_url: null,
+            discord_user_id: message.author.id,
+            discord_channel_id: message.channel.id,
+        });
+    } catch (e) {
+        console.error("[DB] Failed to insert food place:", e.message);
+    }
 
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setLabel("Instagram Post").setEmoji("📸").setURL(url).setStyle(ButtonStyle.Link)
