@@ -38,4 +38,14 @@ const insertFoodPlace = (data) => {
     insert.run({ ...data, created_at: new Date().toISOString() });
 };
 
-module.exports = { db, insertFoodPlace };
+const _getRecent = db.prepare(
+    `SELECT * FROM food_places ORDER BY created_at DESC LIMIT 5`
+);
+const _search = db.prepare(
+    `SELECT * FROM food_places WHERE restaurant_name LIKE ? ORDER BY created_at DESC LIMIT 5`
+);
+
+const getRecentFoodPlaces = () => _getRecent.all();
+const searchFoodPlaces = (query) => _search.all(`%${query}%`);
+
+module.exports = { db, insertFoodPlace, getRecentFoodPlaces, searchFoodPlaces };
